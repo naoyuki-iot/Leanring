@@ -1,0 +1,3 @@
+/Users/ojipan/Learning/opencv/testcpp/build/CMakeFiles/rebuild_cache.dir
+/Users/ojipan/Learning/opencv/testcpp/build/CMakeFiles/edit_cache.dir
+/Users/ojipan/Learning/opencv/testcpp/build/CMakeFiles/DisplayImage.dir

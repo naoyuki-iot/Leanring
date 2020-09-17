@@ -369,6 +369,40 @@ DateTime::DateTime(const __FlashStringHelper *date,
 
 /**************************************************************************/
 /*!
+    @brief  Constructor for creating a DateTime from an ISO8601 date string.
+
+    This constructor expects its parameters to be a string in the
+    https://en.wikipedia.org/wiki/ISO_8601 format, e.g:
+
+    "2020-06-25T15:29:37"
+
+    Usage:
+
+    ```
+    DateTime dt("2020-06-25T15:29:37");
+    ```
+
+    @note The year must be > 2000, as only the yOff is considered.
+
+    @param iso8601dateTime
+           A dateTime string in iso8601 format,
+           e.g. "2020-06-25T15:29:37".
+
+*/
+/**************************************************************************/
+DateTime::DateTime(const char *iso8601dateTime) {
+  char ref[] = "2000-01-01T00:00:00";
+  memcpy(ref, iso8601dateTime, min(strlen(ref), strlen(iso8601dateTime)));
+  yOff = conv2d(ref + 2);
+  m = conv2d(ref + 5);
+  d = conv2d(ref + 8);
+  hh = conv2d(ref + 11);
+  mm = conv2d(ref + 14);
+  ss = conv2d(ref + 17);
+}
+
+/**************************************************************************/
+/*!
     @brief  Check whether this DateTime is valid.
     @return true if valid, false if not.
 */
@@ -624,25 +658,44 @@ TimeSpan DateTime::operator-(const DateTime &right) {
 
 /**************************************************************************/
 /*!
+    @author Anton Rieutskyi
     @brief  Test if one DateTime is less (earlier) than another.
+    @warning if one or both DateTime objects are invalid, returned value is
+        meaningless
+    @see use `isValid()` method to check if DateTime object is valid
     @param right Comparison DateTime object
     @return True if the left DateTime is earlier than the right one,
         false otherwise.
 */
 /**************************************************************************/
 bool DateTime::operator<(const DateTime &right) const {
-  return unixtime() < right.unixtime();
+  return (yOff + 2000 < right.year() ||
+          (yOff + 2000 == right.year() &&
+           (m < right.month() ||
+            (m == right.month() &&
+             (d < right.day() ||
+              (d == right.day() &&
+               (hh < right.hour() ||
+                (hh == right.hour() &&
+                 (mm < right.minute() ||
+                  (mm == right.minute() && ss < right.second()))))))))));
 }
 
 /**************************************************************************/
 /*!
+    @author Anton Rieutskyi
     @brief  Test if two DateTime objects are equal.
+    @warning if one or both DateTime objects are invalid, returned value is
+        meaningless
+    @see use `isValid()` method to check if DateTime object is valid
     @param right Comparison DateTime object
     @return True if both DateTime objects are the same, false otherwise.
 */
 /**************************************************************************/
 bool DateTime::operator==(const DateTime &right) const {
-  return unixtime() == right.unixtime();
+  return (right.year() == yOff + 2000 && right.month() == m &&
+          right.day() == d && right.hour() == hh && right.minute() == mm &&
+          right.second() == ss);
 }
 
 /**************************************************************************/
@@ -661,7 +714,7 @@ bool DateTime::operator==(const DateTime &right) const {
 */
 /**************************************************************************/
 String DateTime::timestamp(timestampOpt opt) {
-  char buffer[20];
+  char buffer[25]; // large enough for any DateTime, including invalid ones
 
   // Generate timestamp according to opt
   switch (opt) {
@@ -755,13 +808,16 @@ static uint8_t bin2bcd(uint8_t val) { return val + 6 * (val / 10); }
 
 /**************************************************************************/
 /*!
-    @brief  Startup for the DS1307
-    @return Always true
+    @brief  Start I2C for the DS1307 and test succesful connection
+    @return True if Wire can find DS1307 or false otherwise.
 */
 /**************************************************************************/
 boolean RTC_DS1307::begin(void) {
   Wire.begin();
-  return true;
+  Wire.beginTransmission(DS1307_ADDRESS);
+  if (Wire.endTransmission() == 0)
+    return true;
+  return false;
 }
 
 /**************************************************************************/
@@ -995,15 +1051,31 @@ DateTime RTC_Micros::now() {
 
 /**************************************************************************/
 /*!
-    @brief  Start using the PCF8523
-    @return True
+    @brief  Start I2C for the PCF8523 and test succesful connection
+    @return True if Wire can find PCF8523 or false otherwise.
 */
 /**************************************************************************/
-////////////////////////////////////////////////////////////////////////////////
-// RTC_PCF8563 implementation
 boolean RTC_PCF8523::begin(void) {
   Wire.begin();
-  return true;
+  Wire.beginTransmission(PCF8523_ADDRESS);
+  if (Wire.endTransmission() == 0)
+    return true;
+  return false;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Check the status register Oscillator Stop flag to see if the PCF8523
+   stopped due to power loss
+    @details When battery or external power is first applied, the PCF8523's
+   crystal oscillator takes up to 2s to stabilize. During this time adjust()
+   cannot clear the 'OS' flag. See datasheet OS flag section for details.
+    @return True if the bit is set (oscillator is or has stopped) and false only
+   after the bit is cleared, for instance with adjust()
+*/
+/**************************************************************************/
+boolean RTC_PCF8523::lostPower(void) {
+  return (read_i2c_register(PCF8523_ADDRESS, PCF8523_STATUSREG) >> 7);
 }
 
 /**************************************************************************/
@@ -1020,7 +1092,7 @@ boolean RTC_PCF8523::initialized(void) {
 
   Wire.requestFrom(PCF8523_ADDRESS, 1);
   uint8_t ss = Wire._I2C_READ();
-  return ((ss & 0xE0) != 0xE0);
+  return ((ss & 0xE0) != 0xE0); // 0xE0 = standby mode, set after power out
 }
 
 /**************************************************************************/
@@ -1073,8 +1145,43 @@ DateTime RTC_PCF8523::now() {
 
 /**************************************************************************/
 /*!
-    @brief  Read the mode of the SQW pin on the PCF8523
-    @return SQW pin mode as a Pcf8523SqwPinMode enum
+    @brief  Resets the STOP bit in register Control_1
+*/
+/**************************************************************************/
+void RTC_PCF8523::start(void) {
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1);
+  if (ctlreg & (1 << 5)) {
+    write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1, ctlreg & ~(1 << 5));
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Sets the STOP bit in register Control_1
+*/
+/**************************************************************************/
+void RTC_PCF8523::stop(void) {
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1);
+  if (!(ctlreg & (1 << 5))) {
+    write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1, ctlreg | (1 << 5));
+  }
+}
+
+/**************************************************************************/
+/*!
+    @brief  Is the PCF8523 running? Check the STOP bit in register Control_1
+    @return 1 if the RTC is running, 0 if not
+*/
+/**************************************************************************/
+uint8_t RTC_PCF8523::isrunning() {
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1);
+  return !((ctlreg >> 5) & 1);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Read the mode of the INT/SQW pin on the PCF8523
+    @return SQW pin mode as a #Pcf8523SqwPinMode enum
 */
 /**************************************************************************/
 Pcf8523SqwPinMode RTC_PCF8523::readSqwPinMode() {
@@ -1094,25 +1201,147 @@ Pcf8523SqwPinMode RTC_PCF8523::readSqwPinMode() {
 
 /**************************************************************************/
 /*!
-    @brief  Set the SQW pin mode on the PCF8523
-    @param mode The mode to set, see the Pcf8523SqwPinMode enum for options
+    @brief  Set the INT/SQW pin mode on the PCF8523
+    @param mode The mode to set, see the #Pcf8523SqwPinMode enum for options
 */
 /**************************************************************************/
 void RTC_PCF8523::writeSqwPinMode(Pcf8523SqwPinMode mode) {
   Wire.beginTransmission(PCF8523_ADDRESS);
   Wire._I2C_WRITE(PCF8523_CLKOUTCONTROL);
-  Wire._I2C_WRITE(mode << 3);
+  Wire._I2C_WRITE(mode << 3); // disables other timers
   Wire.endTransmission();
 }
 
 /**************************************************************************/
 /*!
-    @brief  Use an offset to calibrate the PCF8523. This can be used for:
+    @brief  Enable the Second Timer (1Hz) Interrupt on the PCF8523.
+    @details The INT/SQW pin will pull low for a brief pulse once per second.
+*/
+/**************************************************************************/
+void RTC_PCF8523::enableSecondTimer() {
+  // Leave compatible settings intact
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1);
+  uint8_t clkreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL);
+
+  // TAM pulse int. mode (shared with Timer A), CLKOUT (aka SQW) disabled
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL, clkreg | 0xB8);
+
+  // SIE Second timer int. enable
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1, ctlreg | (1 << 2));
+}
+
+/**************************************************************************/
+/*!
+    @brief  Disable the Second Timer (1Hz) Interrupt on the PCF8523.
+*/
+/**************************************************************************/
+void RTC_PCF8523::disableSecondTimer() {
+  // Leave compatible settings intact
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1);
+
+  // SIE Second timer int. disable
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_1, ctlreg & ~(1 << 2));
+}
+
+/**************************************************************************/
+/*!
+    @brief  Enable the Countdown Timer Interrupt on the PCF8523.
+    @details The INT/SQW pin will be pulled low at the end of a specified
+   countdown period ranging from 244 microseconds to 10.625 days.
+    Uses PCF8523 Timer B. Any existing CLKOUT square wave, configured with
+   writeSqwPinMode(), will halt. The interrupt low pulse width is adjustable
+   from 3/64ths (default) to 14/64ths of a second.
+    @param clkFreq One of the PCF8523's Timer Source Clock Frequencies.
+   See the #PCF8523TimerClockFreq enum for options and associated time ranges.
+    @param numPeriods The number of clkFreq periods (1-255) to count down.
+    @param lowPulseWidth Optional: the length of time for the interrupt pin
+   low pulse. See the #PCF8523TimerIntPulse enum for options.
+*/
+/**************************************************************************/
+void RTC_PCF8523::enableCountdownTimer(PCF8523TimerClockFreq clkFreq,
+                                       uint8_t numPeriods,
+                                       uint8_t lowPulseWidth) {
+  // Datasheet cautions against updating countdown value while it's running,
+  // so disabling allows repeated calls with new values to set new countdowns
+  disableCountdownTimer();
+
+  // Leave compatible settings intact
+  uint8_t ctlreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_2);
+  uint8_t clkreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL);
+
+  // CTBIE Countdown Timer B Interrupt Enabled
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_2, ctlreg |= 0x01);
+
+  // Timer B source clock frequency, optionally int. low pulse width
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_TIMER_B_FRCTL,
+                     lowPulseWidth << 4 | clkFreq);
+
+  // Timer B value (number of source clock periods)
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_TIMER_B_VALUE, numPeriods);
+
+  // TBM Timer B pulse int. mode, CLKOUT (aka SQW) disabled, TBC start Timer B
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL, clkreg | 0x79);
+}
+
+/**************************************************************************/
+/*!
+    @overload
+    @brief  Enable Countdown Timer using default interrupt low pulse width.
+    @param clkFreq One of the PCF8523's Timer Source Clock Frequencies.
+   See the #PCF8523TimerClockFreq enum for options and associated time ranges.
+    @param numPeriods The number of clkFreq periods (1-255) to count down.
+*/
+/**************************************************************************/
+void RTC_PCF8523::enableCountdownTimer(PCF8523TimerClockFreq clkFreq,
+                                       uint8_t numPeriods) {
+  enableCountdownTimer(clkFreq, numPeriods, 0);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Disable the Countdown Timer Interrupt on the PCF8523.
+    @details For simplicity, this function strictly disables Timer B by setting
+   TBC to 0. The datasheet describes TBC as the Timer B on/off switch.
+   Timer B is the only countdown timer implemented at this time.
+   The following flags have no effect while TBC is off, they are *not* cleared:
+      - TBM: Timer B will still be set to pulsed mode.
+      - CTBIE: Timer B interrupt would be triggered if TBC were on.
+      - CTBF: Timer B flag indicates that interrupt was triggered. Though
+        typically used for non-pulsed mode, user may wish to query this later.
+*/
+/**************************************************************************/
+void RTC_PCF8523::disableCountdownTimer() {
+  // Leave compatible settings intact
+  uint8_t clkreg = read_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL);
+
+  // TBC disable to stop Timer B clock
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL, ~1 & clkreg);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Stop all timers, clear their flags and settings on the PCF8523.
+    @details This includes the Countdown Timer, Second Timer, and any CLKOUT
+   square wave configured with writeSqwPinMode().
+*/
+/**************************************************************************/
+void RTC_PCF8523::deconfigureAllTimers() {
+  disableSecondTimer(); // Surgically clears CONTROL_1
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CONTROL_2, 0);
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_CLKOUTCONTROL, 0);
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_TIMER_B_FRCTL, 0);
+  write_i2c_register(PCF8523_ADDRESS, PCF8523_TIMER_B_VALUE, 0);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Use an offset to calibrate the PCF8523.
+    @details This can be used for:
             - Aging adjustment
             - Temperature compensation
             - Accuracy tuning
     @param mode The offset mode to use, once every two hours or once every
-   minute. See the Pcf8523OffsetMode enum.
+   minute. See the #Pcf8523OffsetMode enum.
     @param offset Offset value from -64 to +63. See the datasheet for exact ppm
    values.
 */
@@ -1375,4 +1604,41 @@ void RTC_DS3231::clearAlarm(uint8_t alarm_num) {
 bool RTC_DS3231::alarmFired(uint8_t alarm_num) {
   uint8_t status = read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG);
   return (status >> (alarm_num - 1)) & 0x1;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Enable 32KHz Output
+    @details The 32kHz output is enabled by default. It requires an external
+    pull-up resistor to function correctly
+*/
+/**************************************************************************/
+void RTC_DS3231::enable32K(void) {
+  uint8_t status = read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG);
+  status |= (0x1 << 0x03);
+  write_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG, status);
+  // Serial.println(read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG), BIN);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Disable 32KHz Output
+*/
+/**************************************************************************/
+void RTC_DS3231::disable32K(void) {
+  uint8_t status = read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG);
+  status &= ~(0x1 << 0x03);
+  write_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG, status);
+  // Serial.println(read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG), BIN);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Get status of 32KHz Output
+    @return True if enabled otherwise false
+*/
+/**************************************************************************/
+bool RTC_DS3231::isEnabled32K(void) {
+  uint8_t status = read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG);
+  return (status >> 0x03) & 0x1;
 }

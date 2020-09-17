@@ -1,6 +1,6 @@
 #include <RCS620S.h>
 
-#define SERIAL_BOUND     115200
+#define SERIAL_BOUND     9600
 #define COMMAND_TIMEOUT  400
 #define POLLING_INTERVAL 500
 #define SD_PN            4

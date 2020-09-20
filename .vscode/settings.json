@@ -1,3 +1,7 @@
 {
-    "python.pythonPath": "/home/ov23nmatsumoto/anaconda3/envs/py37/bin/python"
+    "python.pythonPath": "/home/ov23nmatsumoto/anaconda3/envs/py37/bin/python",
+    "files.associations": {
+        "string": "cpp",
+        "iosfwd": "cpp"
+    }
 }

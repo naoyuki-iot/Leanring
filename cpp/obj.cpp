@@ -27,5 +27,6 @@ int main()
 {
     Clock c;
     c.set(6,30);
+    
     c.print();
 }

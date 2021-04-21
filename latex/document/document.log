@@ -1,75 +1,47 @@
-This is e-upTeX, Version 3.141592653-p3.9.0-u1.27-210218-2.6 (utf8.uptex) (TeX Live 2021) (preloaded format=uplatex 2021.4.21)  21 APR 2021 20:43
+This is e-upTeX, Version 3.141592653-p3.9.0-u1.27-210218-2.6 (utf8.uptex) (TeX Live 2021) (preloaded format=uplatex 2021.4.21)  21 APR 2021 20:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **/Users/nmatsumoto/Practice/latex/document/document
 (/Users/nmatsumoto/Practice/latex/document/document.tex
 pLaTeX2e <2020-10-01u04>+2 (based on LaTeX2e <2020-10-01> patch level 4)
-L3 programming layer <2021-02-18> (/usr/local/texlive/2021/texmf-dist/tex/platex/jsclasses/jsarticle.cls
-Document Class: jsarticle 2020/10/09 jsclasses (okumura, texjporg)
-
-! Class jsarticle Error: You are running upLaTeX.
-(jsarticle)              Please use pLaTeX instead, or add 'uplatex' to
-(jsarticle)              the class option list.
-
-See the jsarticle class documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.224       {\@ehc}
-                   
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-\jsc@mpt=\dimen154
-\jsc@mmm=\dimen155
-\jsc@smallskipamount=\skip47
-LaTeX Info: Redefining \textmc on input line 497.
-LaTeX Info: Redefining \textgt on input line 499.
+L3 programming layer <2021-02-18> (/usr/local/texlive/2021/texmf-dist/tex/uplatex/base/ujarticle.cls
+Document Class: ujarticle 2020/09/30 v1.8f-u00 Standard upLaTeX class
+\c@@paper=\count178
+(/usr/local/texlive/2021/texmf-dist/tex/uplatex/base/ujsize10.clo
+File: ujsize10.clo 2020/09/30 v1.8f-u00 Standard upLaTeX file (size option)
+LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
+(Font)              scaled to size 9.6222pt on input line 28.
+LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
+(Font)              scaled to size 9.6222pt on input line 28.
+)
+\c@part=\count179
+\c@section=\count180
+\c@subsection=\count181
+\c@subsubsection=\count182
+\c@paragraph=\count183
+\c@subparagraph=\count184
+\c@figure=\count185
+\c@table=\count186
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
 \symmincho=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
-(Font)                  JY2/mc/m/n --> JY2/gt/m/n on input line 561.
-LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 9.24683pt on input line 755.
-LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 9.24683pt on input line 755.
-\fullwidth=\dimen156
-LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 7.39746pt on input line 908.
-LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 7.39746pt on input line 908.
-\c@part=\count178
-\c@section=\count179
-\c@subsection=\count180
-\c@subsubsection=\count181
-\c@paragraph=\count182
-\c@subparagraph=\count183
-\@abstractbox=\box64
-\c@figure=\count184
-\c@table=\count185
-\abovecaptionskip=\skip48
-\belowcaptionskip=\skip49
-\jsc@tocl@width=\dimen157
-\@lnumwidth=\dimen158
-\bibindent=\dimen159
-(/usr/local/texlive/2021/texmf-dist/tex/platex/jsclasses/jslogo.sty
-Package: jslogo 2019/07/25 okumura, texjporg
-LaTeX Info: Redefining \TeX on input line 82.
-LaTeX Info: Redefining \LaTeX on input line 135.
-LaTeX Info: Redefining \LaTeXe on input line 188.
-)
-\heisei=\count186
+(Font)                  JY2/mc/m/n --> JY2/gt/m/n on input line 616.
+\toclineskip=\dimen154
+\@lnumwidth=\dimen155
+\bibindent=\dimen156
+\heisei=\count187
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
 File: l3backend-dvips.def 2021-03-18 L3 backend support: dvips
-\l__pdf_internal_box=\box65
-\g__pdf_backend_object_int=\count187
-\l__pdf_backend_content_box=\box66
-\l__pdf_backend_model_box=\box67
-\g__pdf_backend_annotation_int=\count188
-\g__pdf_backend_link_int=\count189
-\g__pdf_backend_link_sf_int=\count190
-)
-No file document.aux.
+\l__pdf_internal_box=\box64
+\g__pdf_backend_object_int=\count188
+\l__pdf_backend_content_box=\box65
+\l__pdf_backend_model_box=\box66
+\g__pdf_backend_annotation_int=\count189
+\g__pdf_backend_link_int=\count190
+\g__pdf_backend_link_sf_int=\count191
+) (./document.aux)
 \openout1 = `document.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
@@ -95,21 +67,21 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 3.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 6.47278pt on input line 3.
+(Font)              scaled to size 6.73553pt on input line 3.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 4.62341pt on input line 3.
+(Font)              scaled to size 4.8111pt on input line 3.
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 6.47278pt on input line 3.
-[1
+(Font)              scaled to size 6.73553pt on input line 3.
+ [1
 
 ] (./document.aux) ) 
 Here is how much of TeX's memory you used:
- 606 strings out of 479460
- 9694 string characters out of 5870464
- 301628 words of memory out of 5000000
- 18381 multiletter control sequences out of 15000+600000
- 407409 words of font info for 53 fonts, out of 8000000 for 9000
- 934 hyphenation exceptions out of 8191
- 54i,4n,60p,198b,169s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 444 strings out of 479460
+ 7821 string characters out of 5870464
+ 299556 words of memory out of 5000000
+ 18224 multiletter control sequences out of 15000+600000
+ 406071 words of font info for 45 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 44i,4n,50p,190b,163s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on document.dvi (1 page, 332 bytes).

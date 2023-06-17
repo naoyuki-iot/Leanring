@@ -1,0 +1,18 @@
+# Fdb version 4
+["pdflatex"] 1687042163 "/Users/nmatsumoto/Documents/Practice/latex/document/document.tex" "document.pdf" "document" 1687042164 2
+  "/Users/nmatsumoto/Documents/Practice/latex/document/document.tex" 1686928122 77 a0415e72391600d0544a74f6dfa049e7 ""
+  "/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
+  "/usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
+  "/usr/local/texlive/2023/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def" 1681935207 29940 9473d58112bc8a88f5505b823a053dde ""
+  "/usr/local/texlive/2023/texmf-dist/tex/uplatex/base/ujarticle.cls" 1601501193 25756 696812db1093637a703931ccf3d2e037 ""
+  "/usr/local/texlive/2023/texmf-dist/web2c/texmf.cnf" 1681165822 40967 d940221f8762fd5848760382d97d1226 ""
+  "/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1687041552 4643411 5ced174c6d521e21dd58a10751c00482 ""
+  "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1687041676 7903643 91c767a45cdf2650e0bff7610752dbc5 ""
+  "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
+  "document.aux" 1687042164 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "document.tex" 1686928122 77 a0415e72391600d0544a74f6dfa049e7 ""
+  (generated)
+  "document.aux"
+  "document.log"
+  "document.pdf"
+  (rewritten before read)

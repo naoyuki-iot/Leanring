@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is e-upTeX, Version 3.141592653-p4.1.0-u1.29-230214-2.6 (utf8.uptex) (TeX Live 2023) (preloaded format=uplatex 2023.6.19)  19 JUN 2023 19:54
 entering extended mode
  restricted \write18 enabled.
@@ -11,6 +12,21 @@ L3 programming layer <2023-06-16>
 Document Class: ujarticle 2020/09/30 v1.8f-u00 Standard upLaTeX class
 \c@@paper=\count184
 (c:/texlive/2023/texmf-dist/tex/uplatex/base/ujsize10.clo
+=======
+This is e-upTeX, Version 3.141592653-p4.1.0-u1.29-230214-2.6 (utf8.uptex) (TeX Live 2023) (preloaded format=uplatex 2023.6.18)  18 JUN 2023 07:55
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**/Users/nmatsumoto/Documents/Practice/latex/document/document
+(/Users/nmatsumoto/Documents/Practice/latex/document/document.tex
+pLaTeX2e <2023-02-14u04>+1, based on
+LaTeX2e <2023-06-01>
+L3 programming layer <2023-06-05>
+(/usr/local/texlive/2023/texmf-dist/tex/uplatex/base/ujarticle.cls
+Document Class: ujarticle 2020/09/30 v1.8f-u00 Standard upLaTeX class
+\c@@paper=\count184
+(/usr/local/texlive/2023/texmf-dist/tex/uplatex/base/ujsize10.clo
+>>>>>>> 0ba83e9029d3b18260dd31620a63f1a23006a93f
 File: ujsize10.clo 2020/09/30 v1.8f-u00 Standard upLaTeX file (size option)
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
 (Font)              scaled to size 9.6222pt on input line 28.
@@ -34,7 +50,11 @@ LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
 \@lnumwidth=\dimen157
 \bibindent=\dimen158
 \heisei=\count193
+<<<<<<< HEAD
 ) (c:/texlive/2023/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
+=======
+) (/usr/local/texlive/2023/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
+>>>>>>> 0ba83e9029d3b18260dd31620a63f1a23006a93f
 File: l3backend-dvips.def 2023-04-19 L3 backend support: dvips
 \l__pdf_internal_box=\box68
 \g__pdf_backend_object_int=\count194
@@ -80,6 +100,7 @@ LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
  ***********
 pLaTeX2e <2023-02-14u04>+1, based on
 LaTeX2e <2023-06-01>
+<<<<<<< HEAD
 L3 programming layer <2023-06-16>
  ***********
  ) 
@@ -91,5 +112,18 @@ Here is how much of TeX's memory you used:
  516028 words of font info for 52 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
  35i,5n,50p,214b,170s stack positions out of 10000i,1000n,20000p,200000b,200000s
+=======
+L3 programming layer <2023-06-05>
+ ***********
+ ) 
+Here is how much of TeX's memory you used:
+ 488 strings out of 476390
+ 9212 string characters out of 5797328
+ 1845595 words of memory out of 5000000
+ 21325 multiletter control sequences out of 15000+600000
+ 516028 words of font info for 52 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 35i,5n,50p,209b,170s stack positions out of 10000i,1000n,20000p,200000b,200000s
+>>>>>>> 0ba83e9029d3b18260dd31620a63f1a23006a93f
 
 Output written on document.dvi (1 page, 332 bytes).
